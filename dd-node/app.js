@@ -7,8 +7,6 @@ mongoose.connect('mongodb://localhost:27017/mydd', {useNewUrlParser: true});
 //建立模型
 const Schema = mongoose.Schema;
 const book = new Schema({
-    id:Number,
-    type:String,
     name:String,
     price:Number,
     old_price:Number,
@@ -45,7 +43,7 @@ app.get('/booklist',(req,res) => {
 //根据id查询一本书
 app.get('/detail',(req,res) => {
     const id = req.query.id;
-    Book.findOne({id:id},(err,data) => {
+    Book.findById(id,(err,data) => {
         if (err) {
             console.log(err);
             return;

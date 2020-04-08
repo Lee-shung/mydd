@@ -1,6 +1,6 @@
 <template>
   <div class="dd-list">
-    <div @click="toDetail(book.id)" class="book-item" v-for="(book,index) in bookList" :key="index">
+    <div @click="toDetail(book._id)" class="book-item" v-for="(book,index) in bookList" :key="index">
       <image class="img" :src="book.image" mode="widthFix" />
       <div class="book-info">
         <div class="name">{{book.name}}</div>

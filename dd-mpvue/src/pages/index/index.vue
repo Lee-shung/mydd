@@ -35,17 +35,24 @@ export default {
   onLoad() {
     //将this指向Vue
     let _this = this;
+    let {local} = _this.globalData;
     //请求书籍类型
     wx.request({
-      url: 'http://localhost:9001/typelist',
+      url: local+'/typelist',
       success(res) {
+        res.data.forEach(item => {
+          item.image = local + item.image;
+        });
         _this.type = res.data;
       }
     });
     //请求图书列表
     wx.request({
-      url: 'http://localhost:9001/booklist',
+      url: local+'/booklist',
       success(res) {
+        res.data.forEach(item => {
+          item.image = local+item.image;
+        })
         //将数据存入vuex
         store.commit('SET_BOOKLIST',res.data);
       }

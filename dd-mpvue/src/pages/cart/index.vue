@@ -39,7 +39,7 @@
       <text style="margin: 0 20rpx">全选</text>
       <text> 合计：</text>
       <text style="font-weight: bold;display: inline-block;width: 230rpx;text-align: left">￥{{total}}</text>
-      <text style="background: #f2303c;height: 76rpx;width: 200rpx;border-radius: 76rpx;display: inline-block;text-align: center;color: #fff">
+      <text @click="toOrder" style="background: #f2303c;height: 76rpx;width: 200rpx;border-radius: 76rpx;display: inline-block;text-align: center;color: #fff">
         结算({{selectNum}})
       </text>
     </div>
@@ -51,7 +51,8 @@ export default {
     name: 'cart',
     data() {
       return {
-        cart: []
+        cart: [],
+        openId:''
       }
     },
     computed: {
@@ -70,7 +71,7 @@ export default {
         let count = 0;
         this.cart.forEach(item => {
           if (item.isChecked) {
-            count ++;
+            count += item.count;
           }
         });
         return count;
@@ -107,17 +108,61 @@ export default {
       //添加商品数量
       add(index) {
         this.cart[index].count ++;
+      },
+      //提交订单
+      toOrder(){
+        let _this = this;
+        let order = this.cart.filter(item => {
+          return item.isChecked;
+        });
+        [] || order.forEach(item => {
+          delete item.desc;
+          delete item.discount;
+          delete item.isChecked;
+          delete item.old_price;
+        });
+        let orders = {
+          order:order,
+          count:this.selectNum,
+          total:this.total,
+          openId:this.openId
+        };
+        wx.request({
+          url:'http://localhost:9001/order',
+          data:orders,
+          method:'POST',
+          success(res) {
+            //如果提交订单成功，则把已经购买的移除
+            if (res.data.status == 200) {
+              let arr = _this.cart.filter(item => {
+                return !item.isChecked;
+              });
+              _this.cart = arr;
+            }
+            wx.showToast({
+              title:res.data.result
+            });
+          }
+        });
       }
+    },
+    onLoad() {
+      let _this = this;
+      wx.cloud.callFunction({
+            name:"login"
+          }).then(res=>{
+             _this.openId=res.result.openid;
+          }).catch(err=>{
+            console.log(err);
+          });
     },
     //页面显示时读取缓存
     onShow() {
-      let cart = wx.getStorageSync('cart');
-      // console.log(cart);
+      let cart = wx.getStorageSync('cart') || [];
       this.cart = cart;
     },
     //页面消失时更新缓存
     onHide() {
-      // console.log(this.cart);
       wx.setStorageSync('cart',this.cart);
     }
 }

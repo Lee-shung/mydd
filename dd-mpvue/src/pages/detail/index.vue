@@ -53,7 +53,7 @@ export default {
       let cart = wx.getStorageSync("cart")||[];
       //判断当前商品id是否存在
       let index = cart.findIndex(item => {
-        return item.id == book.id;
+        return item._id == book._id;
       });
       if (index == -1) {
         book.isChecked = true;
@@ -83,24 +83,18 @@ export default {
   onLoad(options) {
     let {id} = options;
     let _this = this;
+    let {local} = _this.globalData;
     wx.request({
-      url:'http://localhost:9001/detail?id='+id,
+      url:local+'/detail?id='+id,
       success(res) {
         let book = res.data;
         book.discount = (book.price/book.old_price*10).toFixed(2);
         book.price = (book.price).toFixed(2);
         book.old_price = (book.old_price).toFixed(2);
+        book.image = local+book.image;
         _this.book = book;
       }
     });
-    // this.bookList.forEach(item => {
-    //   if (item.id == id) {
-    //     item.discount = (item.price/item.old_price*10).toFixed(2);
-    //     item.price = (item.price).toFixed(2);
-    //     item.old_price = (item.old_price).toFixed(2);
-    //     this.book = item;
-    //   }
-    // });
   }
 }
 </script>

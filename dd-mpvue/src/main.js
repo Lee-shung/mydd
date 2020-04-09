@@ -8,4 +8,7 @@ Vue.prototype.$store = store
 App.mpType = 'app'
 import './../static/iconfont/iconfont.css'
 const app = new Vue(App)
-app.$mount()
+app.$mount();
+Vue.prototype.globalData = {
+  local:'http://localhost:9001'
+}

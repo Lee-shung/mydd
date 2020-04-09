@@ -1,5 +1,9 @@
 const express = require('express');
 const app = express();
+app.use("/upload", express.static("upload"));
+//格式化post请求参数
+app.use(express.urlencoded({extends:true}));
+app.use(express.json());
 //引入mongoose
 const mongoose = require('mongoose');
 //连接数据库
@@ -17,9 +21,27 @@ const type = new Schema({
     name:String,
     image:String
 });
+const order = new Schema({
+    order:[],
+    count: Number,
+    total: Number,
+    openId: String
+});
+
 //实例化模型
 const Book = mongoose.model('Book', book);
 const Type = mongoose.model('Type', type);
+const Order = mongoose.model('Order', order);
+//添加订单
+app.post('/order',(req,res) => {
+    Order.insertMany(req.body,(err,data) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        res.json({result:'购买成功!',status:200});
+    })
+});
 //查询所有图书类型
 app.get('/typelist',(req,res) => {
     Type.find({}, (err, data) => {

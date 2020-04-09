@@ -78,26 +78,20 @@
                     <thead>
                         <tr>
                             <th>编号</th>
-                            <th>名称</th>
+                            <th>类名</th>
                             <th>图片</th>
-                            <th>价格</th>
-                            <th>原价</th>
-                            <th>描述</th>
                             <th class="text-center">操作</th>
                         </tr>
                     </thead>
                     <tbody>
-                    <% for(let i = 0; i < booklist.length; i ++) { %>
+                    <% for(let i = 0; i < types.length; i ++) { %>
                         <tr>
                             <td><%= i+1 %></td>
-                            <<td><%= booklist[i].name%></td>
-                            <td><img style="width: 50px" src="<%= booklist[i].image %>" alt=""></td>
-                            <td><%= booklist[i].price %></td>
-                            <td><%= booklist[i].old_price %></td>
-                            <td><%= booklist[i].desc.slice(0,24)+'...' %></td>
+                            <td><%= types[i].name %></td>
+                            <td><img style="width: 50px" src="<%= types[i].image %>" alt=""></td>
                             <td class="text-center">
-                                <a href="/admin/edit?id=<%= booklist[i]._id %>">修改</a>|
-                                <a href="/admin/delbook?id=<%= booklist[i]._id %>">删除</a>
+                                <a href="/admin/edittype?id=<%= types[i]._id %>">修改</a>|
+                                <a href="/admin/deltype?id=<%= types[i]._id %>">删除</a>
                             </td>
                         </tr>
                     <% } %>
